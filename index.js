@@ -7,6 +7,8 @@ const Resource = require("./models/resourcesModel");
 const cors = require("cors");
 const app = express();
 const morgan = require("morgan");
+const Year = require("./models/yearModel");
+const Semester = require("./models/semesterModel");
 require("dotenv").config();
 require("colors");
 
@@ -38,6 +40,20 @@ app.post("/courses", async (req, res) => {
 
 app.get("/", async (req, res) => {
 	res.send("running");
+});
+
+app.post("/api/year", async (req, res) => {
+	const year = new Year(req.body);
+	console.log(req.body);
+	await year.save();
+	res.send(year);
+});
+
+app.post("/api/semester", async (req, res) => {
+	const semester = new Semester(req.body);
+	console.log(req.body);
+	await semester.save();
+	res.send(semester);
 });
 
 app.post("/resources/course/questions", async (req, res) => {
