@@ -11,6 +11,8 @@ const Year = require("./models/yearModel");
 const Semester = require("./models/semesterModel");
 const { default: mongoose } = require("mongoose");
 const contributeRouter = require("./routes/contributeRoute");
+const userRouter = require("./routes/userRoute");
+const adminRouter = require("./routes/adminRoutes");
 const path = require("path");
 const multer = require("multer");
 require("dotenv").config();
@@ -26,7 +28,8 @@ app.use(morgan("dev"));
 // routes
 
 app.use("/api/contribute/", contributeRouter);
-
+app.use("/api/user/", userRouter);
+app.use("/api/admin/", adminRouter);
 app.use("/uploads/pdf", express.static(path.join(__dirname, "uploads/pdf")));
 
 const port = process.env.PORT || 8080;
@@ -36,18 +39,44 @@ const storage = multer.diskStorage({
 		cb(null, "uploads/pdf");
 	},
 	filename(req, file, cb) {
-		console.log(file);
 		cb(
 			null,
-			`${file.fieldname}-${Date.now()}${path.extname(file.originalname)}`
+			`${file.originalname
+				.trim()
+				.replace(/\s+/g, "-")
+				.substring(
+					0,
+					file.originalname.length - 4
+				)}-${Date.now()}${path.extname(file.originalname)}`
 		);
 	},
 });
 
-const upload = multer({ storage: storage });
+function checkFileType(req, file, cb) {
+	const filetypes = /pdf/;
+	const extname = filetypes.test(path.extname(file.originalname).toLowerCase());
+	const mimetype = filetypes.test(file.mimetype);
+	const fileSize = parseInt(req.headers["content-length"]);
+	if (extname && mimetype && fileSize < 31457280) {
+		return cb(null, true);
+	} else {
+		cb("File should be less than 50mb");
+	}
+}
+
+const upload = multer({
+	storage: storage,
+	fileFilter: function (req, file, cb) {
+		checkFileType(req, file, cb);
+	},
+});
 
 app.post("/upload/pdf", upload.single("file"), function (req, res) {
-	res.send(`/${req.file.path}`);
+	try {
+		res.send(`/${req.file.path}`);
+	} catch (error) {
+		res.send(error.message);
+	}
 });
 
 app.get("/university", async (req, res) => {

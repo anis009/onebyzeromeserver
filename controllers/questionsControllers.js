@@ -5,6 +5,7 @@ const Resource = require("../models/resourcesModel");
 // @access private
 exports.createQuestions = async (req, res) => {
 	const { courseInfo, questions } = req.body;
+	console.log(questions);
 
 	try {
 		const resource = await Resource.findOne(courseInfo, "questions").exec();
