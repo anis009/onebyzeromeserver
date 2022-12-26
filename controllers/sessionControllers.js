@@ -9,3 +9,10 @@ exports.createSession = async (req, res) => {
 		res.send(error.message);
 	}
 };
+
+exports.getSession = async (req, res) => {
+	try {
+		const sessions = await Session.find();
+		res.send(sessions);
+	} catch (error) {}
+};
