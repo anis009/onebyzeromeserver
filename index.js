@@ -13,8 +13,10 @@ const { default: mongoose } = require("mongoose");
 const contributeRouter = require("./routes/contributeRoute");
 const userRouter = require("./routes/userRoute");
 const adminRouter = require("./routes/adminRoutes");
+const sessionRouter = require("./routes/sessionRoute");
 const path = require("path");
 const multer = require("multer");
+
 require("dotenv").config();
 require("colors");
 
@@ -30,6 +32,7 @@ app.use(morgan("dev"));
 app.use("/api/contribute/", contributeRouter);
 app.use("/api/user/", userRouter);
 app.use("/api/admin/", adminRouter);
+app.use("/api/session/", sessionRouter);
 app.use("/uploads/pdf", express.static(path.join(__dirname, "uploads/pdf")));
 
 const port = process.env.PORT || 8080;
