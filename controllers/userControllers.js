@@ -30,3 +30,15 @@ exports.getUserByEmail = async (req, res) => {
 		});
 	}
 };
+
+exports.getAllUsers = async (req, res) => {
+	const query = {};
+	try {
+		const users = await User.find(query).sort({ createdAt: -1 });
+		res.send(users);
+	} catch (err) {
+		res.status(500).send({
+			message: err.message,
+		});
+	}
+};

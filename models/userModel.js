@@ -5,6 +5,10 @@ const userSchema = new mongoose.Schema(
 			type: String,
 			required: true,
 		},
+		name: {
+			type: String,
+			required: true,
+		},
 		phoneNumber: {
 			type: String,
 			default: +880000,
@@ -25,6 +29,15 @@ const userSchema = new mongoose.Schema(
 			type: Boolean,
 			default: false,
 		},
+		university: String,
+		image: {
+			type: String,
+			default: "https://i.ibb.co/fp92Ldr/icons8-person-90.png",
+		},
+		department: String,
+		school: String,
+		gender: String,
+		dateOfBirth: Date,
 	},
 	{
 		timestamps: true,
