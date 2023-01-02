@@ -10,8 +10,11 @@ const userSchema = new mongoose.Schema(
 			required: true,
 		},
 		phoneNumber: {
-			type: String,
-			default: +880000,
+			number: String,
+			privacy: {
+				type: String,
+				default: "public",
+			},
 		},
 		userRole: {
 			type: String,
@@ -29,15 +32,39 @@ const userSchema = new mongoose.Schema(
 			type: Boolean,
 			default: false,
 		},
-		university: String,
+		university: {
+			name: String,
+			privacy: {
+				type: String,
+				default: "public",
+			},
+		},
 		image: {
 			type: String,
 			default: "https://i.ibb.co/fp92Ldr/icons8-person-90.png",
 		},
-		department: String,
+		department: {
+			name: String,
+			privacy: {
+				type: String,
+				default: "public",
+			},
+		},
 		school: String,
-		gender: String,
-		dateOfBirth: Date,
+		gender: {
+			value: Date,
+			privacy: {
+				type: String,
+				default: "public",
+			},
+		},
+		dateOfBirth: {
+			value: Date,
+			privacy: {
+				type: String,
+				default: "public",
+			},
+		},
 	},
 	{
 		timestamps: true,

@@ -24,7 +24,11 @@ connectDB();
 
 // middleware
 app.use(express.json());
-app.use(cors());
+app.use(
+	cors({
+		origin: "*",
+	})
+);
 app.use(morgan("dev"));
 
 // routes
@@ -101,7 +105,7 @@ app.post("/courses", async (req, res) => {
 });
 
 app.get("/", async (req, res) => {
-	res.send("running");
+	res.send("running server");
 });
 
 app.post("/api/year", async (req, res) => {
