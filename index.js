@@ -105,7 +105,7 @@ app.post("/courses", async (req, res) => {
 });
 
 app.get("/", async (req, res) => {
-	res.send(`running server on  ${port}`);
+	res.send(`running server on  sin`);
 });
 
 app.post("/api/year", async (req, res) => {
