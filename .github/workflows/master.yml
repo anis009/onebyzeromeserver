@@ -17,6 +17,6 @@ jobs:
       uses: SamKirkland/FTP-Deploy-Action@4.3.3
       with:
         server: ftp.onebyzeroedu.com
-        username: serveronebyzeroftp@server.onebyzeroedu.com
+        username: onebyze1@server.onebyzeroedu.com
         password: ${{ secrets.FTP_PASSWORD }}
         port: 21
