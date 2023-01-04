@@ -1,0 +1,5 @@
+---
+deployment:
+  tasks:
+    - export DEPLOYPATH=/home/onebyze1/test.onebyzeroedu.com/
+    - /bin/cp * $DEPLOYPATH
