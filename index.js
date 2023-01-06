@@ -4,7 +4,7 @@ const University = require("./models/universityModel");
 const Department = require("./models/departmentModel");
 const Course = require("./models/courseModel");
 const Resource = require("./models/resourcesModel");
-const fs = require("fs");
+const promises = require("fs").promises;
 const cors = require("cors");
 const app = express();
 const morgan = require("morgan");
@@ -119,7 +119,7 @@ app.get("/", async (req, res) => {
 app.post("/api/pdf", async (req, res) => {
 	const pdf = req.body.file;
 	console.log(pdf);
-	var data = fs.readFileSync(pdf);
+	const data = await promises.readFile(pdf);
 	res.contentType("application/pdf");
 	res.send(data);
 });
