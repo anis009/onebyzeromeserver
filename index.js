@@ -4,6 +4,7 @@ const University = require("./models/universityModel");
 const Department = require("./models/departmentModel");
 const Course = require("./models/courseModel");
 const Resource = require("./models/resourcesModel");
+const fs = require("fs");
 const cors = require("cors");
 const app = express();
 const morgan = require("morgan");
@@ -115,6 +116,13 @@ app.get("/", async (req, res) => {
 	res.send(`running server on sina`);
 });
 
+app.post("/api/pdf", async (req, res) => {
+	const pdf = req.body.file;
+	console.log(pdf);
+	var data = fs.readFileSync(pdf);
+	res.contentType("application/pdf");
+	res.send(data);
+});
 app.post("/api/year", async (req, res) => {
 	const year = new Year(req.body);
 	console.log(req.body);
