@@ -17,6 +17,8 @@ const examNameRouter = require("./routes/examNameRoute");
 const adminRouter = require("./routes/adminRoutes");
 const sessionRouter = require("./routes/sessionRoute");
 const uploadRouter = require("./routes/uploadRoutes");
+const yearRouter = require("./routes/yearRoute");
+const semesterRouter = require("./routes/semesterRoute");
 const path = require("path");
 const multer = require("multer");
 const { PDFNet } = require("@pdftron/pdfnet-node");
@@ -52,6 +54,8 @@ app.use("/api/admin/", adminRouter);
 app.use("/api/session/", sessionRouter);
 app.use("/api/examname/", examNameRouter);
 app.use("/api/upload/pdf/", uploadRouter);
+app.use("/api/year/", yearRouter);
+app.use("/api/semester/", semesterRouter);
 // app.use("/uploads/pdf", express.static(path.join(__dirname, "uploads/pdf")));
 
 const port = process.env.PORT || 8080;
@@ -102,28 +106,6 @@ app.post("/api/pdf", async (req, res) => {
 	const data = await promises.readFile(pdf);
 	res.contentType("application/pdf");
 	res.send(data);
-});
-app.post("/api/year", async (req, res) => {
-	const year = new Year(req.body);
-	console.log(req.body);
-	await year.save();
-	res.send(year);
-});
-
-app.get("/api/year", async (req, res) => {
-	const year = await Year.find();
-	res.send(year);
-});
-
-app.post("/api/semester", async (req, res) => {
-	const semester = new Semester(req.body);
-	console.log(req.body);
-	await semester.save();
-	res.send(semester);
-});
-app.get("/api/semester", async (req, res) => {
-	const semester = await Semester.find();
-	res.send(semester);
 });
 
 app.post("/resources/course", async (req, res) => {
