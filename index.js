@@ -16,8 +16,14 @@ const userRouter = require("./routes/userRoute");
 const examNameRouter = require("./routes/examNameRoute");
 const adminRouter = require("./routes/adminRoutes");
 const sessionRouter = require("./routes/sessionRoute");
+const uploadRouter = require("./routes/uploadRoutes");
 const path = require("path");
 const multer = require("multer");
+const { PDFNet } = require("@pdftron/pdfnet-node");
+const fs = require("fs");
+const pdf = require("pdf-thumbnail");
+const gm = require("gm");
+const PDFExtract = require("pdf.js-extract").PDFExtract;
 
 require("dotenv").config();
 require("colors");
@@ -45,54 +51,10 @@ app.use("/api/user/", userRouter);
 app.use("/api/admin/", adminRouter);
 app.use("/api/session/", sessionRouter);
 app.use("/api/examname/", examNameRouter);
-app.use("/uploads/pdf", express.static(path.join(__dirname, "uploads/pdf")));
+app.use("/api/upload/pdf/", uploadRouter);
+// app.use("/uploads/pdf", express.static(path.join(__dirname, "uploads/pdf")));
 
 const port = process.env.PORT || 8080;
-// uploadPdf
-const storage = multer.diskStorage({
-	destination(req, file, cb) {
-		cb(null, "uploads/pdf");
-	},
-	filename(req, file, cb) {
-		cb(
-			null,
-			`${file.originalname
-				.trim()
-				.replace(/\s+/g, "-")
-				.substring(
-					0,
-					file.originalname.length - 4
-				)}-${Date.now()}${path.extname(file.originalname)}`
-		);
-	},
-});
-
-function checkFileType(req, file, cb) {
-	const filetypes = /pdf/;
-	const extname = filetypes.test(path.extname(file.originalname).toLowerCase());
-	const mimetype = filetypes.test(file.mimetype);
-	const fileSize = parseInt(req.headers["content-length"]);
-	if (extname && mimetype && fileSize < 31457280) {
-		return cb(null, true);
-	} else {
-		cb("File should be less than 50mb");
-	}
-}
-
-const upload = multer({
-	storage: storage,
-	fileFilter: function (req, file, cb) {
-		checkFileType(req, file, cb);
-	},
-});
-
-app.post("/upload/pdf", upload.single("file"), function (req, res) {
-	try {
-		res.send(`/${req.file.path}`);
-	} catch (error) {
-		res.send(error.message);
-	}
-});
 
 app.get("/university", async (req, res) => {
 	const universities = await University.find();
@@ -114,6 +76,24 @@ app.post("/courses", async (req, res) => {
 
 app.get("/", async (req, res) => {
 	res.send(`running server on sina`);
+});
+
+app.get("/api/pdf/thumbnail", async (req, res) => {
+	const { filename } = req.query;
+	console.log(filename);
+	const pdfData = await promises.readFile(`./uploads/pdf/${filename}`);
+	const pdfExtract = new PDFExtract();
+
+	const options = {
+		firstPage: 1,
+		lastPage: 2,
+	}; /* see below */
+	pdfExtract.extractBuffer(pdfData, options, (err, data) => {
+		if (err) {
+			res.status(500).send(err);
+		}
+		res.send(data);
+	});
 });
 
 app.post("/api/pdf", async (req, res) => {
@@ -151,6 +131,18 @@ app.post("/resources/course", async (req, res) => {
 	console.log(query);
 	const data = await Resource.find(query);
 	res.send(data[0]);
+});
+
+app.get("/update/resources", async (req, res) => {
+	const data = await Resource.updateMany(
+		{
+			books: {
+				$exists: true,
+			},
+		},
+		{ $set: { "books.$[].thumbnail": "" } }
+	);
+	res.send(data);
 });
 
 app.listen(port, () => {
