@@ -16,3 +16,16 @@ exports.getSession = async (req, res) => {
 		res.send(sessions);
 	} catch (error) {}
 };
+
+exports.getSessionByValue = async (req, res) => {
+	const value = Number(req.params.id);
+	try {
+		const query = {
+			value: value,
+		};
+		const session = await Session.findOne(query).exec();
+		res.send(session);
+	} catch (error) {
+		res.send(error);
+	}
+};
