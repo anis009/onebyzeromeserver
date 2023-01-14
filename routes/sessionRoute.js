@@ -9,4 +9,5 @@ const router = express.Router();
 
 router.route("/").post(createSession).get(getSession);
 router.route("/:id").get(getSessionByValue);
+
 module.exports = router;

@@ -1,8 +1,9 @@
 const { default: mongoose } = require("mongoose");
 const Resource = require("../models/resourcesModel");
 // @desc Create Questions
-// @route POST /api/contribute/quesions
+// @route POST /api/contribute/questions
 // @access private
+
 exports.createQuestions = async (req, res) => {
 	const { courseInfo, questions } = req.body;
 	console.log(questions);
@@ -34,5 +35,29 @@ exports.createQuestions = async (req, res) => {
 		}
 	} catch (error) {
 		res.send({ message: error.message });
+	}
+};
+
+exports.updateQuestions = async (req, res) => {
+	const data = req.body;
+	const { _id, courseId, examName, session, link } = data;
+	console.log(data);
+	try {
+		const resource = await Resource.update(
+			{
+				_id: new mongoose.Types.ObjectId(courseId),
+				"questions._id": new mongoose.Types.ObjectId(_id).toString(),
+			},
+			{
+				$set: {
+					"questions.$.examName": examName,
+					"questions.$.session": session,
+					"questions.$.link": link,
+				},
+			}
+		);
+		res.send(resource);
+	} catch (error) {
+		res.send(error);
 	}
 };
