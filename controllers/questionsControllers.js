@@ -61,3 +61,25 @@ exports.updateQuestions = async (req, res) => {
 		res.send(error);
 	}
 };
+
+exports.deleteQuestions = async (req, res) => {
+	const courseId = req.query.courseId;
+	const questionId = req.query.questionId;
+	try {
+		const result = await Resource.update(
+			{
+				_id: new mongoose.Types.ObjectId(courseId),
+			},
+			{
+				$pull: {
+					questions: {
+						_id: new mongoose.Types.ObjectId(questionId).toString(),
+					},
+				},
+			}
+		);
+		res.send(result);
+	} catch (err) {
+		console.log(err);
+	}
+};
