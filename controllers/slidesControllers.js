@@ -10,7 +10,7 @@ exports.createslides = async (req, res) => {
 		const resource = await Resource.findOne(courseInfo, "slides").exec();
 
 		if (resource) {
-			resource.slides.push({
+			resource.slides.unshift({
 				...books,
 				createdAt: new Date(),
 				_id: new mongoose.Types.ObjectId().toString(),
@@ -22,7 +22,7 @@ exports.createslides = async (req, res) => {
 			return res.send(resource);
 		} else {
 			const createResource = new Resource(courseInfo);
-			createResource.slides.push({
+			createResource.slides.unshift({
 				...books,
 				createdAt: new Date(),
 				_id: new mongoose.Types.ObjectId().toString(),

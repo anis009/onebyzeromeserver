@@ -10,7 +10,7 @@ exports.createHandNotes = async (req, res) => {
 		const resource = await Resource.findOne(courseInfo, "handNotes").exec();
 
 		if (resource) {
-			resource.handNotes.push({
+			resource.handNotes.unshift({
 				...books,
 				createdAt: new Date(),
 				_id: new mongoose.Types.ObjectId().toString(),
@@ -22,7 +22,7 @@ exports.createHandNotes = async (req, res) => {
 			return res.send(resource);
 		} else {
 			const createResource = new Resource(courseInfo);
-			createResource.handNotes.push({
+			createResource.handNotes.unshift({
 				...books,
 				createdAt: new Date(),
 				_id: new mongoose.Types.ObjectId().toString(),
