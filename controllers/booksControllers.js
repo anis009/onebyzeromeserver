@@ -10,7 +10,7 @@ exports.createBooks = async (req, res) => {
 		const resource = await Resource.findOne(courseInfo, "books").exec();
 
 		if (resource) {
-			resource.books.push({
+			resource.books.unshift({
 				...books,
 				createdAt: new Date(),
 				_id: new mongoose.Types.ObjectId().toString(),
@@ -22,7 +22,7 @@ exports.createBooks = async (req, res) => {
 			return res.send(resource);
 		} else {
 			const createResource = new Resource(courseInfo);
-			createResource.books.push({
+			createResource.books.unshift({
 				...books,
 				createdAt: new Date(),
 				_id: new mongoose.Types.ObjectId().toString(),
