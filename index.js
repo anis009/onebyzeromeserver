@@ -76,31 +76,25 @@ app.get("/", async (req, res) => {
 	res.send(`running server on sina`);
 });
 
-app.get("/api/pdf/thumbnail", async (req, res) => {
-	const { filename } = req.query;
-	console.log(filename);
-	const pdfData = await promises.readFile(`./uploads/pdf/${filename}`);
-	const pdfExtract = new PDFExtract();
-
-	const options = {
-		firstPage: 1,
-		lastPage: 2,
-	}; /* see below */
-	pdfExtract.extractBuffer(pdfData, options, (err, data) => {
-		if (err) {
-			res.status(500).send(err);
-		}
+app.post("/api/thumbnail", async (req, res) => {
+	const pdf = req.body.file;
+	try {
+		const data = await promises.readFile(pdf);
+		res.contentType("image/png");
 		res.send(data);
-	});
+	} catch (err) {
+		res.send(err.message);
+	}
 });
 
 app.post("/api/pdf", async (req, res) => {
 	const pdf = req.body.file;
-	console.log(pdf);
 	const data = await promises.readFile(pdf);
 	res.contentType("application/pdf");
 	res.send(data);
 });
+
+app.post("");
 
 app.post("/resources/course", async (req, res) => {
 	const query = req.body;
