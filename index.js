@@ -16,6 +16,7 @@ const sessionRouter = require("./routes/sessionRoute");
 const uploadRouter = require("./routes/uploadRoutes");
 const yearRouter = require("./routes/yearRoute");
 const semesterRouter = require("./routes/semesterRoute");
+const courseRouter = require("./routes/courseRoutes");
 const path = require("path");
 const multer = require("multer");
 const { PDFNet } = require("@pdftron/pdfnet-node");
@@ -50,7 +51,12 @@ app.use("/api/examname/", examNameRouter);
 app.use("/api/upload/", uploadRouter);
 app.use("/api/year/", yearRouter);
 app.use("/api/semester/", semesterRouter);
-// app.use("/uploads/pdf", express.static(path.join(__dirname, "uploads/pdf")));
+app.use("/api/course/", courseRouter);
+app.use("/uploads/pdf", express.static(path.join(__dirname, "uploads/pdf")));
+app.use(
+	"/uploads/thumbnail",
+	express.static(path.join(__dirname, "uploads/thumbnail"))
+);
 
 const port = process.env.PORT || 8080;
 
