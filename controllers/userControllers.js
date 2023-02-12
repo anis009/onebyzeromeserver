@@ -42,3 +42,22 @@ exports.getAllUsers = async (req, res) => {
 		});
 	}
 };
+
+exports.addAsModerator = async (req, res) => {
+	const id = req.params.id;
+	try {
+		const user = await User.findOne({ _id: id });
+		if (!user) {
+			return res.status(404).send({
+				message: "User is not exist",
+			});
+		}
+		user.userRole = "moderator";
+		await user.save();
+		res.send(user);
+	} catch (err) {
+		res.status(500).send({
+			message: err.message,
+		});
+	}
+};
