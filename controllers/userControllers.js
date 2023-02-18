@@ -1,4 +1,5 @@
 const User = require("../models/userModel");
+const { generateToken } = require("../utils/generateAuthToken");
 
 exports.createUser = async (req, res) => {
 	try {
@@ -60,4 +61,10 @@ exports.addAsModerator = async (req, res) => {
 			message: err.message,
 		});
 	}
+};
+
+exports.getToken = async (req, res) => {
+	const email = req.query?.email;
+	const token = await generateToken(email);
+	res.send({ token });
 };

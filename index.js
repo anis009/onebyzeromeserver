@@ -103,8 +103,6 @@ app.post("/api/pdf", async (req, res) => {
 	res.send(data);
 });
 
-app.post("");
-
 app.post("/resources/course", async (req, res) => {
 	const query = req.body;
 	console.log(query);
