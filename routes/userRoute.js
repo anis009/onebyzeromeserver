@@ -11,6 +11,6 @@ const router = express.Router();
 router.route("/").post(createUser).get(getUserByEmail);
 router.route("/all").get(getAllUsers);
 router.route("/addasmoderator/:id").put(addAsModerator);
-router.route("/jwt/:id").get(getToken);
+router.route("/jwt").get(getToken);
 
 module.exports = router;
