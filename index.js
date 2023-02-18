@@ -17,7 +17,9 @@ const uploadRouter = require("./routes/uploadRoutes");
 const yearRouter = require("./routes/yearRoute");
 const semesterRouter = require("./routes/semesterRoute");
 const courseRouter = require("./routes/courseRoutes");
+const resourcesRouter = require("./routes/resourcesRoutes");
 const path = require("path");
+
 const multer = require("multer");
 const { PDFNet } = require("@pdftron/pdfnet-node");
 const PDFExtract = require("pdf.js-extract").PDFExtract;
@@ -52,6 +54,7 @@ app.use("/api/upload/", uploadRouter);
 app.use("/api/year/", yearRouter);
 app.use("/api/semester/", semesterRouter);
 app.use("/api/course/", courseRouter);
+app.use("/api/resources/", resourcesRouter);
 app.use("/uploads/pdf", express.static(path.join(__dirname, "uploads/pdf")));
 app.use(
 	"/uploads/thumbnail",
