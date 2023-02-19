@@ -87,3 +87,32 @@ exports.getResources = async (req, res) => {
 		});
 	}
 };
+
+exports.getCountAllResources = async (req, res) => {
+	try {
+		const countsProperty = await Resource.aggregate([
+			{
+				$project: {
+					books: {
+						$size: "$books",
+					},
+					slides: {
+						$size: "$slides",
+					},
+					handNotes: {
+						$size: "$handNotes",
+					},
+					questions: {
+						$size: "$questions",
+					},
+				},
+			},
+		]);
+		res.send(countsProperty);
+	} catch (error) {
+		console.log(error);
+		res.status(500).send({
+			message: "Something Went Wrong!",
+		});
+	}
+};
