@@ -19,6 +19,7 @@ const semesterRouter = require("./routes/semesterRoute");
 const courseRouter = require("./routes/courseRoutes");
 const resourcesRouter = require("./routes/resourcesRoutes");
 const path = require("path");
+const fs = require("fs");
 
 const multer = require("multer");
 const { PDFNet } = require("@pdftron/pdfnet-node");
@@ -120,6 +121,17 @@ app.get("/update/resources", async (req, res) => {
 		{ $set: { "books.$[].thumbnail": "" } }
 	);
 	res.send(data);
+});
+
+app.get("/delete", async (req, res) => {
+	fs.unlink("./uploads/pdf/expression-operator-1671829992403.pdf", (err) => {
+		if (err) {
+			console.error(err);
+		}
+	});
+
+	console.log(`File  deleted from database.`);
+	res.send("delete");
 });
 
 app.listen(port, () => {

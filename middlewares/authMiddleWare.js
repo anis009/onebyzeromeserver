@@ -10,7 +10,7 @@ exports.auth = async (req, res, next) => {
 		try {
 			token = req.headers.authorization.split(" ")[1];
 			const decoded = jwt.verify(token, process.env.JWT_SECRET);
-			console.log(decoded);
+			//	console.log(decoded);
 			const user = await User.findOne({ email: decoded?.email }).exec();
 			if (!user) {
 				return res.status(401).send({
