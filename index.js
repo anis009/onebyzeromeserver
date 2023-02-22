@@ -61,6 +61,10 @@ app.use(
 	"/uploads/thumbnail",
 	express.static(path.join(__dirname, "uploads/thumbnail"))
 );
+app.use(
+	"/uploads/profile",
+	express.static(path.join(__dirname, "uploads/profile"))
+);
 
 const port = process.env.PORT || 8080;
 
