@@ -12,7 +12,9 @@ exports.createSession = async (req, res) => {
 
 exports.getSession = async (req, res) => {
 	try {
-		const sessions = await Session.find();
+		const sessions = await Session.find().sort({
+			value: -1,
+		});
 		res.send(sessions);
 	} catch (error) {}
 };
