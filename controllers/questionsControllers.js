@@ -65,7 +65,16 @@ exports.updateQuestions = async (req, res) => {
 exports.deleteQuestions = async (req, res) => {
 	const courseId = req.query.courseId;
 	const questionId = req.query.questionId;
+	const link = req.query?.link;
 	try {
+		// TODO:: DELETE FILE
+		if (!link.includes("i.ibb.co")) {
+			fs.unlink(`./${imageUrl}`, (err) => {
+				if (err) {
+					console.error(err);
+				}
+			});
+		}
 		const result = await Resource.update(
 			{
 				_id: new mongoose.Types.ObjectId(courseId),
