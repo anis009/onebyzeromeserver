@@ -179,4 +179,67 @@ router
 		}
 	});
 
+// TODO::UPLOAD question IMAGE
+const storageQuestionImage = multer.diskStorage({
+	destination(req, file, cb) {
+		cb(null, "uploads/question");
+	},
+	filename(req, file, cb) {
+		cb(
+			null,
+			`${file.originalname
+				.trim()
+				.replace(/\s+/g, "-")
+				.substring(
+					0,
+					file.originalname.length - 4
+				)}-${Date.now()}${path.extname(file.originalname)}`
+		);
+	},
+});
+
+//TODO:: CHECK UPLOAD question image
+function checkFileTypeQuestionImage(req, file, cb) {
+	const filetypes = /jpeg|jpg|png/;
+	const extname = filetypes.test(path.extname(file.originalname).toLowerCase());
+	const mimetype = filetypes.test(file.mimetype);
+	const fileSize = parseInt(req.headers["content-length"]);
+	//TODO:: 5mb = 5*1024*1024=5242880
+	if (extname && mimetype && fileSize < 5242880) {
+		return cb(null, true);
+	} else {
+		cb("Question should be less than equal 5mb \n it will be only image");
+	}
+}
+
+//TODO:: UPLOAD PROFILE IMAGE
+const questionImage = multer({
+	storage: storageQuestionImage,
+	fileFilter: function (req, file, cb) {
+		checkFileTypeQuestionImage(req, file, cb);
+	},
+});
+
+//TODO::UPLOAD PROFILE IMAGE ROUTER
+router
+	.route("/question")
+	.post(auth, questionImage.single("file"), async function (req, res) {
+		const email = req.query?.email;
+		let user = req.user;
+		// TODO:: TOKEN VALIDITY CHECK
+		if (user?.email !== email) {
+			return res.status(401).send({
+				message: "Not authorized, token failed!",
+			});
+		}
+
+		try {
+			res.send(`${req.file.path}`);
+		} catch (error) {
+			res.send({
+				message: error.message,
+			});
+		}
+	});
+
 module.exports = router;
