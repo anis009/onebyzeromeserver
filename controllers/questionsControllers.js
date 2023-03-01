@@ -69,7 +69,7 @@ exports.deleteQuestions = async (req, res) => {
 	try {
 		// TODO:: DELETE FILE
 		if (!link.includes("i.ibb.co")) {
-			fs.unlink(`./${imageUrl}`, (err) => {
+			fs.unlink(`./${link}`, (err) => {
 				if (err) {
 					console.error(err);
 				}
