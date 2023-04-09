@@ -116,3 +116,109 @@ exports.getCountAllResources = async (req, res) => {
 		});
 	}
 };
+
+exports.getRecentAllBooks = async (req, res) => {
+	const limit = Number(req?.query?.limit) || 5;
+	const data = await Resource.aggregate([
+		{
+			$unwind: "$books", // Unwind the books array to treat each book as a separate document
+		},
+		{
+			$sort: { "books.createdDate": -1 }, // Sort the documents in descending order based on createdDate
+		},
+		{
+			$group: {
+				_id: null, // Group all documents together since we want to push all books into a single array object
+				books: { $push: "$books" }, // Push all books into a single array object
+			},
+		},
+		{
+			$project: {
+				_id: 0, // Exclude the _id field
+				books: {
+					$slice: ["$books", limit], // Limit the books array to 3 elements (most recent books)
+				},
+			},
+		},
+	]);
+
+	res.send(data[0]);
+};
+exports.getRecentAllSlides = async (req, res) => {
+	const limit = Number(req?.query?.limit) || 5;
+	const data = await Resource.aggregate([
+		{
+			$unwind: "$slides", // Unwind the books array to treat each book as a separate document
+		},
+		{
+			$sort: { "slides.createdDate": -1 }, // Sort the documents in descending order based on createdDate
+		},
+		{
+			$group: {
+				_id: null, // Group all documents together since we want to push all books into a single array object
+				slides: { $push: "$slides" }, // Push all books into a single array object
+			},
+		},
+		{
+			$project: {
+				_id: 0, // Exclude the _id field
+				slides: {
+					$slice: ["$slides", limit], // Limit the books array to 3 elements (most recent books)
+				},
+			},
+		},
+	]);
+	res.send(data[0]);
+};
+exports.getRecentAllHandNotes = async (req, res) => {
+	const limit = Number(req?.query?.limit) || 5;
+	const data = await Resource.aggregate([
+		{
+			$unwind: "$handNotes", // Unwind the books array to treat each book as a separate document
+		},
+		{
+			$sort: { "handNotes.createdDate": -1 }, // Sort the documents in descending order based on createdDate
+		},
+		{
+			$group: {
+				_id: null, // Group all documents together since we want to push all books into a single array object
+				handNotes: { $push: "$handNotes" }, // Push all books into a single array object
+			},
+		},
+		{
+			$project: {
+				_id: 0, // Exclude the _id field
+				handNotes: {
+					$slice: ["$handNotes", limit], // Limit the books array to 3 elements (most recent books)
+				},
+			},
+		},
+	]);
+	res.send(data[0]);
+};
+exports.getRecentAllQuestions = async (req, res) => {
+	const limit = Number(req?.query?.limit) || 5;
+	const data = await Resource.aggregate([
+		{
+			$unwind: "$questions", // Unwind the books array to treat each book as a separate document
+		},
+		{
+			$sort: { "questions.createdDate": -1 }, // Sort the documents in descending order based on createdDate
+		},
+		{
+			$group: {
+				_id: null, // Group all documents together since we want to push all books into a single array object
+				questions: { $push: "$questions" }, // Push all books into a single array object
+			},
+		},
+		{
+			$project: {
+				_id: 0, // Exclude the _id field
+				questions: {
+					$slice: ["$questions", limit], // Limit the books array to 3 elements (most recent books)
+				},
+			},
+		},
+	]);
+	res.send(data[0]);
+};

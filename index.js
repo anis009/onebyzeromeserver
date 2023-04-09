@@ -20,10 +20,7 @@ const courseRouter = require("./routes/courseRoutes");
 const resourcesRouter = require("./routes/resourcesRoutes");
 const path = require("path");
 const fs = require("fs");
-
-const multer = require("multer");
-const { PDFNet } = require("@pdftron/pdfnet-node");
-const PDFExtract = require("pdf.js-extract").PDFExtract;
+const http = require("http");
 
 require("dotenv").config();
 require("colors");
@@ -142,6 +139,28 @@ app.get("/delete", async (req, res) => {
 	res.send("delete");
 });
 
-app.listen(port, () => {
+var server = http.createServer(app).listen(port, function () {
 	console.log(`Server is running on ${port}`.blue.underline.bold);
 });
+
+var io = require("socket.io")(server, {
+	cors: {
+		origin: "*",
+		methods: ["GET", "POST"],
+	},
+});
+
+// io.sockets.on("connection", function () {
+// 	console.log("hello world im a hot socket");
+// });
+
+io.on("connection", (socket) => {
+	socket.on("notification", (msg) => {
+		console.log("notification: " + msg);
+		io.emit("notification", "anaskjakfsdhsalk");
+	});
+});
+
+// app.listen(port, () => {
+// 	console.log(`Server is running on ${port}`.blue.underline.bold);
+// });

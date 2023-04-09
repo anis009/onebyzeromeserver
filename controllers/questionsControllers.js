@@ -1,5 +1,6 @@
 const { default: mongoose } = require("mongoose");
 const Resource = require("../models/resourcesModel");
+const fs = require("fs");
 // @desc Create Questions
 // @route POST /api/contribute/questions
 // @access private
@@ -41,7 +42,7 @@ exports.createQuestions = async (req, res) => {
 exports.updateQuestions = async (req, res) => {
 	const data = req.body;
 	const { _id, courseId, examName, session, link } = data;
-	console.log(data);
+
 	try {
 		const resource = await Resource.update(
 			{
@@ -87,6 +88,7 @@ exports.deleteQuestions = async (req, res) => {
 				},
 			}
 		);
+		console.log(result);
 		res.send(result);
 	} catch (err) {
 		console.log(err);
