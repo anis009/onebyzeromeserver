@@ -14,7 +14,7 @@ exports.createBooks = async (req, res) => {
 				...books,
 				createdAt: new Date(),
 				_id: new mongoose.Types.ObjectId().toString(),
-				isVarified: false,
+				isVerified: false,
 			});
 
 			await resource.save();
@@ -26,7 +26,7 @@ exports.createBooks = async (req, res) => {
 				...books,
 				createdAt: new Date(),
 				_id: new mongoose.Types.ObjectId().toString(),
-				isVarified: false,
+				isVerified: false,
 			});
 			await createResource.save();
 			return res.send(createResource);

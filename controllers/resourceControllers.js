@@ -119,7 +119,11 @@ exports.getCountAllResources = async (req, res) => {
 
 exports.getRecentAllBooks = async (req, res) => {
 	const limit = Number(req?.query?.limit) || 5;
+	const department = req.query?.dept || "Computer Science & Engineering";
 	const data = await Resource.aggregate([
+		{
+			$match: { department: department }, // Match documents based on the department field
+		},
 		{
 			$unwind: "$books", // Unwind the books array to treat each book as a separate document
 		},
@@ -146,7 +150,11 @@ exports.getRecentAllBooks = async (req, res) => {
 };
 exports.getRecentAllSlides = async (req, res) => {
 	const limit = Number(req?.query?.limit) || 5;
+	const department = req.query?.dept || "Computer Science & Engineering";
 	const data = await Resource.aggregate([
+		{
+			$match: { department: department }, // Match documents based on the department field
+		},
 		{
 			$unwind: "$slides", // Unwind the books array to treat each book as a separate document
 		},
@@ -172,7 +180,11 @@ exports.getRecentAllSlides = async (req, res) => {
 };
 exports.getRecentAllHandNotes = async (req, res) => {
 	const limit = Number(req?.query?.limit) || 5;
+	const department = req.query?.dept || "Computer Science & Engineering";
 	const data = await Resource.aggregate([
+		{
+			$match: { department: department }, // Match documents based on the department field
+		},
 		{
 			$unwind: "$handNotes", // Unwind the books array to treat each book as a separate document
 		},
@@ -198,7 +210,11 @@ exports.getRecentAllHandNotes = async (req, res) => {
 };
 exports.getRecentAllQuestions = async (req, res) => {
 	const limit = Number(req?.query?.limit) || 5;
+	const department = req.query?.dept || "Computer Science & Engineering";
 	const data = await Resource.aggregate([
+		{
+			$match: { department: department }, // Match documents based on the department field
+		},
 		{
 			$unwind: "$questions", // Unwind the books array to treat each book as a separate document
 		},
