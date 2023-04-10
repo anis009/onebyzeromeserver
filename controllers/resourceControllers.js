@@ -211,30 +211,26 @@ exports.getRecentAllHandNotes = async (req, res) => {
 exports.getRecentAllQuestions = async (req, res) => {
 	const limit = Number(req?.query?.limit) || 5;
 	const department = req.query?.dept || "Computer Science & Engineering";
-	const data = await Resource.aggregate([
-		{
-			$match: { department: department }, // Match documents based on the department field
-		},
-		{
-			$unwind: "$questions", // Unwind the books array to treat each book as a separate document
-		},
-		{
-			$sort: { "questions.createdDate": -1 }, // Sort the documents in descending order based on createdDate
-		},
-		{
-			$group: {
-				_id: null, // Group all documents together since we want to push all books into a single array object
-				questions: { $push: "$questions" }, // Push all books into a single array object
-			},
-		},
-		{
-			$project: {
-				_id: 0, // Exclude the _id field
-				questions: {
-					$slice: ["$questions", limit], // Limit the books array to 3 elements (most recent books)
-				},
-			},
-		},
-	]);
-	res.send(data[0]);
+	try {
+		const data = await Resource.find({
+			department: department,
+		});
+		let questions = [];
+		data.forEach((resource) => {
+			const courseTitle = resource.courseTitle;
+			const questionsData = resource.questions;
+			questionsData.forEach((question) => {
+				questions.push({
+					courseTitle: courseTitle,
+					...question,
+				});
+			});
+		});
+		questions.sort((a, b) => b.createdAt - a.createdAt);
+		res.send(questions.slice(0, limit));
+	} catch (error) {
+		res.status(500).send({
+			message: error.message,
+		});
+	}
 };
