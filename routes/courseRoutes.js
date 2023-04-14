@@ -2,8 +2,8 @@ const express = require("express");
 const { getCourses } = require("../controllers/courseControllers");
 
 const router = express.Router();
-// /api/course
+// /api/courses
 
-router.route("/").get(getCourses);
+router.route("/").post(getCourses);
 
 module.exports = router;

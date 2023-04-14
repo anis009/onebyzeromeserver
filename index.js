@@ -354,10 +354,6 @@ var io = require("socket.io")(server, {
 	},
 });
 
-io.sockets.on("connection", function () {
-	console.log("hello world im a hot socket");
-});
-
 io.on("connection", (socket) => {
 	socket.on("notification", (msg) => {
 		console.log("notification: " + msg);
