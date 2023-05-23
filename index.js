@@ -68,8 +68,15 @@ app.use(
 );
 
 app.get("/university", async (req, res) => {
-	const universities = await University.find();
-	res.send(universities);
+	try {
+		const universities = await University.find();
+		universities.sort((a, b) => a.name.localeCompare(b.name));
+		res.send(universities);
+	} catch (error) {
+		res.send({
+			message: error.message,
+		});
+	}
 });
 
 app.get("/department", async (req, res) => {
@@ -89,7 +96,7 @@ app.post("/courses", async (req, res) => {
 });
 
 app.get("/", async (req, res) => {
-	res.send(`running server on sina`);
+	res.send(`running server on sina on port 8080`);
 });
 
 app.post("/api/thumbnail", async (req, res) => {
@@ -340,6 +347,14 @@ app.post("/add/demo/department", async (req, res) => {
 	} catch (error) {
 		res.send(error);
 	}
+});
+
+app.post("/add/demo/university/", async (req, res) => {
+	try {
+		const unv = new University(req.body);
+		await unv.save();
+		res.send(unv);
+	} catch (error) {}
 });
 
 const port = process.env.PORT || 8080;
