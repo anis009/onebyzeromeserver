@@ -1,4 +1,5 @@
 const Resource = require("../models/resourcesModel");
+const User = require("../models/userModel");
 
 exports.getResources = async (req, res) => {
 	const email = req?.query?.email;
@@ -300,6 +301,207 @@ exports.getRecentAllQuestions = async (req, res) => {
 		});
 		questions.sort((a, b) => b.createdAt - a.createdAt);
 		res.send(questions.slice(0, limit));
+	} catch (error) {
+		res.status(500).send({
+			message: error.message,
+		});
+	}
+};
+
+exports.getTopContributors = async (req, res) => {
+	const dept = req.params.dept || "Computer Science & Engineering";
+	try {
+		const handNotes = await Resource.aggregate([
+			{
+				$unwind: "$handNotes",
+			},
+			{
+				$match: {
+					department: dept,
+					"handNotes.createdAt": {
+						$gte: new Date("2023-02-22"),
+					},
+				},
+			},
+			{
+				$group: {
+					_id: "$handNotes.email",
+					totalHandNotes: {
+						$sum: 1,
+					},
+				},
+			},
+			{
+				$project: {
+					_id: 0,
+					email: "$_id",
+					totalHandNotes: 1,
+				},
+			},
+			{
+				$sort: {
+					totalHandNotes: -1,
+				},
+			},
+		]);
+
+		const slides = await Resource.aggregate([
+			{
+				$unwind: "$slides",
+			},
+			{
+				$match: {
+					department: dept,
+					"slides.createdAt": {
+						$gte: new Date("2023-02-22"),
+					},
+				},
+			},
+			{
+				$group: {
+					_id: "$slides.email",
+					totalSlides: {
+						$sum: 1,
+					},
+				},
+			},
+			{
+				$project: {
+					_id: 0,
+					email: "$_id",
+					totalSlides: 1,
+				},
+			},
+			{
+				$sort: {
+					totalSlides: -1,
+				},
+			},
+		]);
+
+		const books = await Resource.aggregate([
+			{
+				$unwind: "$books",
+			},
+			{
+				$match: {
+					department: dept,
+					"books.createdAt": {
+						$gte: new Date("2023-02-22"),
+					},
+				},
+			},
+			{
+				$group: {
+					_id: "$books.email",
+					totalBooks: {
+						$sum: 1,
+					},
+				},
+			},
+			{
+				$project: {
+					_id: 0,
+					email: "$_id",
+					totalBooks: 1,
+				},
+			},
+			{
+				$sort: {
+					totalBooks: -1,
+				},
+			},
+		]);
+		const questions = await Resource.aggregate([
+			{
+				$unwind: "$questions",
+			},
+			{
+				$match: {
+					department: dept,
+					"questions.createdAt": {
+						$gte: new Date("2023-02-22"),
+					},
+				},
+			},
+			{
+				$group: {
+					_id: "$questions.email",
+					totalQuestions: {
+						$sum: 1,
+					},
+				},
+			},
+			{
+				$project: {
+					_id: 0,
+					email: "$_id",
+					totalQuestions: 1,
+				},
+			},
+
+			{
+				$sort: {
+					totalQuestions: -1,
+				},
+			},
+		]);
+
+		const users = await User.find().select("email name image");
+
+		let contributors = [];
+
+		users.forEach((user) => {
+			let totalPoints = 0;
+
+			const slideIdx = slides.findIndex((slide) => {
+				return slide.email === user.email;
+			});
+
+			if (slideIdx >= 0) {
+				const totalSlides = slides[slideIdx].totalSlides * 3;
+				totalPoints += totalSlides;
+			}
+
+			const handNoteIdx = handNotes.findIndex(
+				({ email }) => email === user.email
+			);
+
+			if (handNoteIdx >= 0) {
+				const totalHandNotes = handNotes[handNoteIdx].totalHandNotes * 5;
+				totalPoints += totalHandNotes;
+			}
+
+			const bookIdx = books.findIndex(({ email }) => email === user.email);
+
+			if (bookIdx >= 0) {
+				const totalBooks = books[bookIdx].totalBooks * 3;
+				totalPoints += totalBooks;
+			}
+
+			const questionIdx = questions.findIndex(
+				({ email }) => email === user.email
+			);
+
+			if (questionIdx >= 0) {
+				const totalQuestions = questions[questionIdx].totalQuestions * 3;
+				totalPoints += totalQuestions;
+			}
+
+			const userPointObj = {
+				name: user?.name,
+				image: user?.image,
+				email: user.email,
+				_id: user?._id,
+				totalPoints,
+			};
+			contributors.push(userPointObj);
+		});
+
+		contributors.sort((a, b) => b.totalPoints - a.totalPoints);
+		res.json({
+			contributors,
+		});
 	} catch (error) {
 		res.status(500).send({
 			message: error.message,

@@ -358,24 +358,7 @@ app.post("/add/demo/university/", async (req, res) => {
 });
 
 const port = process.env.PORT || 8080;
-var server = http.createServer(app).listen(port, function () {
+
+app.listen(port, () => {
 	console.log(`Server is running on ${port}`.blue.underline.bold);
 });
-
-var io = require("socket.io")(server, {
-	cors: {
-		origin: "*",
-		methods: ["GET", "POST"],
-	},
-});
-
-io.on("connection", (socket) => {
-	socket.on("notification", (msg) => {
-		console.log("notification: " + msg);
-		io.emit("notification", "anaskjakfsdhsalk");
-	});
-});
-
-// app.listen(port, () => {
-// 	console.log(`Server is running on ${port}`.blue.underline.bold);
-// });

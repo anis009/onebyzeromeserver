@@ -6,6 +6,7 @@ const {
 	getRecentAllSlides,
 	getRecentAllHandNotes,
 	getRecentAllQuestions,
+	getTopContributors,
 } = require("../controllers/resourceControllers");
 const { auth } = require("../middlewares/authMiddleWare");
 const router = express.Router();
@@ -17,5 +18,5 @@ router.route("/recent/books").get(getRecentAllBooks);
 router.route("/recent/slides").get(getRecentAllSlides);
 router.route("/recent/handNotes").get(getRecentAllHandNotes);
 router.route("/recent/questions").get(getRecentAllQuestions);
-
+router.route("/top-contributors/:dept").get(getTopContributors);
 module.exports = router;
