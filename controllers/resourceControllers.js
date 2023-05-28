@@ -664,7 +664,7 @@ exports.getRecentAllResources = async (req, res) => {
 			mergedArrays = [...mergedArrays, ...handNotes];
 		}
 
-		mergedArrays.sort((a, b) => a.createdAt - b.createdAt);
+		mergedArrays.sort((a, b) => b.createdAt - a.createdAt);
 		res.json(mergedArrays.slice(0, 100));
 	} catch (error) {
 		res.status(500).send({
