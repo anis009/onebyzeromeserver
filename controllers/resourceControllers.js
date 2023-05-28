@@ -307,7 +307,6 @@ exports.getRecentAllQuestions = async (req, res) => {
 		});
 	}
 };
-
 exports.getTopContributors = async (req, res) => {
 	const dept = req.params.dept || "Computer Science & Engineering";
 	try {
@@ -502,6 +501,171 @@ exports.getTopContributors = async (req, res) => {
 		res.json({
 			contributors,
 		});
+	} catch (error) {
+		res.status(500).send({
+			message: error.message,
+		});
+	}
+};
+
+exports.getRecentAllResources = async (req, res) => {
+	const dept = req.params.dept || "Computer Science & Engineering";
+	try {
+		let books = await Resource.aggregate([
+			{
+				$unwind: "$books",
+			},
+			{
+				$match: {
+					department: dept,
+				},
+			},
+			{
+				$addFields: {
+					"books.resourceId": "$_id",
+					"books.department": "$department",
+					"books.varsity": "$varsity",
+					"books.type": "book",
+				},
+			},
+			{
+				$group: {
+					_id: null,
+					totalBooks: {
+						$push: "$books",
+					},
+				},
+			},
+			{
+				$project: {
+					_id: 0,
+					totalBooks: 1,
+				},
+			},
+		]);
+
+		let slides = await Resource.aggregate([
+			{
+				$unwind: "$slides",
+			},
+			{
+				$match: {
+					department: dept,
+				},
+			},
+			{
+				$addFields: {
+					"slides.resourceId": "$_id",
+					"slides.department": "$department",
+					"slides.varsity": "$varsity",
+					"slides.type": "slide",
+				},
+			},
+			{
+				$group: {
+					_id: null,
+					totalSlides: {
+						$push: "$slides",
+					},
+				},
+			},
+			{
+				$project: {
+					_id: 0,
+					totalSlides: 1,
+				},
+			},
+		]);
+		let questions = await Resource.aggregate([
+			{
+				$unwind: "$questions",
+			},
+			{
+				$match: {
+					department: dept,
+				},
+			},
+			{
+				$addFields: {
+					"questions.resourceId": "$_id",
+					"questions.department": "$department",
+					"questions.varsity": "$varsity",
+					"questions.type": "question",
+				},
+			},
+			{
+				$group: {
+					_id: null,
+					totalQuestions: {
+						$push: "$questions",
+					},
+				},
+			},
+			{
+				$project: {
+					_id: 0,
+					totalQuestions: 1,
+				},
+			},
+		]);
+		let handNotes = await Resource.aggregate([
+			{
+				$unwind: "$handNotes",
+			},
+			{
+				$match: {
+					department: dept,
+				},
+			},
+			{
+				$addFields: {
+					"handNotes.resourceId": "$_id",
+					"handNotes.department": "$department",
+					"handNotes.varsity": "$varsity",
+					"handNotes.type": "handNote",
+				},
+			},
+			{
+				$group: {
+					_id: null,
+					totalHandNotes: {
+						$push: "$handNotes",
+					},
+				},
+			},
+			{
+				$project: {
+					_id: 0,
+					totalHandNotes: 1,
+				},
+			},
+		]);
+
+		books = books[0]?.totalBooks;
+		slides = slides[0]?.totalSlides;
+		questions = questions[0]?.totalQuestions;
+		handNotes = handNotes[0]?.totalHandNotes;
+
+		console.log(books, slides, questions, handNotes);
+		let mergedArrays = [];
+		if (slides?.length > 0) {
+			mergedArrays = [...mergedArrays, ...slides];
+		}
+
+		if (questions?.length > 0) {
+			mergedArrays = [...mergedArrays, ...questions];
+		}
+
+		if (books?.length > 0) {
+			mergedArrays = [...mergedArrays, ...books];
+		}
+
+		if (handNotes?.length > 0) {
+			mergedArrays = [...mergedArrays, ...handNotes];
+		}
+
+		mergedArrays.sort((a, b) => a.createdAt - b.createdAt);
+		res.json(mergedArrays.slice(0, 100));
 	} catch (error) {
 		res.status(500).send({
 			message: error.message,
