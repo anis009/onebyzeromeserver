@@ -2,7 +2,7 @@ const Year = require("../models/yearModel");
 
 exports.createYear = async (req, res) => {
 	const year = new Year(req.body);
-	console.log(req.body);
+	// console.log(req.body);
 	await year.save();
 	res.send(year);
 };

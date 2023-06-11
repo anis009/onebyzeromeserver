@@ -2,7 +2,7 @@ const jwt = require("jsonwebtoken");
 const User = require("../models/userModel");
 exports.auth = async (req, res, next) => {
 	let token;
-	console.log(req.headers.authorization);
+	//console.log(req.headers.authorization);
 	if (
 		req.headers.authorization &&
 		req.headers.authorization.startsWith("Bearer")
@@ -17,7 +17,7 @@ exports.auth = async (req, res, next) => {
 					message: "Not authorized, Your token is expired",
 				});
 			}
-			console.log(user);
+			// console.log(user);
 			req.user = user;
 			next();
 		} catch (err) {

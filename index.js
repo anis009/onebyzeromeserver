@@ -88,7 +88,7 @@ app.get("/department", async (req, res) => {
 });
 
 app.post("/courses", async (req, res) => {
-	console.log(req.body);
+	// console.log(req.body);
 	const query = req.body;
 	const result = await Course.find(query);
 	// console.log(result);
@@ -119,7 +119,7 @@ app.post("/api/pdf", async (req, res) => {
 
 app.post("/resources/course", async (req, res) => {
 	const query = req.body;
-	console.log(query);
+	// console.log(query);
 	const data = await Resource.find(query);
 	res.send(data[0]);
 });
@@ -143,7 +143,7 @@ app.get("/delete", async (req, res) => {
 		}
 	});
 
-	console.log(`File  deleted from database.`);
+	// console.log(`File  deleted from database.`);
 	res.send("delete");
 });
 

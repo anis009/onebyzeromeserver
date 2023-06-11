@@ -111,7 +111,7 @@ exports.getCountAllResources = async (req, res) => {
 		]);
 		res.send(countsProperty);
 	} catch (error) {
-		console.log(error);
+		 console.log(error);
 		res.status(500).send({
 			message: "Something Went Wrong!",
 		});
@@ -646,7 +646,7 @@ exports.getRecentAllResources = async (req, res) => {
 		questions = questions[0]?.totalQuestions;
 		handNotes = handNotes[0]?.totalHandNotes;
 
-		console.log(books, slides, questions, handNotes);
+		// console.log(books, slides, questions, handNotes);
 		let mergedArrays = [];
 		if (slides?.length > 0) {
 			mergedArrays = [...mergedArrays, ...slides];

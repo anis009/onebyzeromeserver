@@ -7,7 +7,7 @@ const fs = require("fs");
 
 exports.createQuestions = async (req, res) => {
 	const { courseInfo, questions } = req.body;
-	console.log(questions);
+	//console.log(questions);
 
 	try {
 		const resource = await Resource.findOne(courseInfo, "questions").exec();
@@ -88,7 +88,7 @@ exports.deleteQuestions = async (req, res) => {
 				},
 			}
 		);
-		console.log(result);
+		//console.log(result);
 		res.send(result);
 	} catch (err) {
 		console.log(err);
