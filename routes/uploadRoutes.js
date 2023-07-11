@@ -29,7 +29,8 @@ function checkFileType(req, file, cb) {
 	const extname = filetypes.test(path.extname(file.originalname).toLowerCase());
 	const mimetype = filetypes.test(file.mimetype);
 	const fileSize = parseInt(req.headers["content-length"]);
-	if (extname && mimetype && fileSize < 31457280) {
+	// 50*1024*1024
+	if (extname && mimetype && fileSize < 52428800) {
 		return cb(null, true);
 	} else {
 		cb("File should be less than 50mb");

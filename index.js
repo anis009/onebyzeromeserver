@@ -21,6 +21,8 @@ const resourcesRouter = require("./routes/resourcesRoutes");
 const path = require("path");
 const fs = require("fs");
 const http = require("http");
+const { executeMongoDump } = require("./backup/backup");
+const config = require("./config");
 
 require("dotenv").config();
 require("colors");
@@ -39,10 +41,12 @@ app.use(
 	})
 );
 app.use(express.json());
-app.use(morgan("dev"));
+
+if (config.node_env === "development") {
+	app.use(morgan("dev"));
+}
 
 // routes
-
 app.use("/api/contribute/", contributeRouter);
 app.use("/api/user/", userRouter);
 app.use("/api/admin/", adminRouter);
@@ -356,6 +360,15 @@ app.post("/add/demo/university/", async (req, res) => {
 		res.send(unv);
 	} catch (error) {}
 });
+
+if (config.node_env === "development") {
+	// Function to execute mongodump command after one day (24 hours)
+	const scheduleMongoDump = () => {
+		setInterval(executeMongoDump, 60 * 1000);
+	};
+	// Start the backup scheduling
+	scheduleMongoDump();
+}
 
 const port = process.env.PORT || 8080;
 
